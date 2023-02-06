@@ -1,0 +1,14 @@
+streamlit
+statelit
+numpy
+pandas
+jax[cpu]
+numba
+altair
+nashpy
+
+ruff
+pip-tools
+isort
+pytest
+pre-commit
