@@ -1,4 +1,5 @@
 # ruff: noqa: E501
+import numpy as np
 import pandas as pd
 
 
@@ -11,7 +12,7 @@ matchup_dict = {
     "Dimir Control": [(13, 0, 18), (7, 0, 7), (4, 0, 7), (1, 0, 4), (6, 0, 3), (1, 0, 1), (3, 0, 0), (3, 0, 1), (0, 0, 2), (1, 0, 1), (1, 0, 1), (1, 0, 2), (3, 0, 1), (1, 0, 1), (1, 0, 1), (0, 0, 1), (1, 0, 1), (1, 0, 1), (0, 0, 0)],
     "Living End": [(11, 0, 19), (8, 0, 4), (2, 0, 7), (7, 0, 1), (6, 0, 1), (0, 0, 3), (1, 0, 1), (3, 0, 1), (0, 0, 4), (0, 0, 0), (1, 0, 0), (0, 0, 1), (0, 0, 0), (0, 0, 1), (0, 0, 0), (1, 0, 1), (1, 0, 0), (0, 0, 1), (0, 0, 0)],
     "Boros Burn": [(7, 0, 2), (4, 0, 3), (7, 0, 3), (0, 0, 5), (4, 0, 2), (1, 0, 3), (1, 0, 3), (1, 0, 1), (2, 0, 1), (0, 0, 1), (3, 0, 2), (1, 0, 2), (0, 0, 1), (0, 0, 1), (0, 0, 2), (0, 0, 1), (0, 0, 0), (0, 0, 0), (0, 0, 0)],
-    "Four-Color Rhinos": [(9, 0, 5), (6, 0, 6), (2, 0, 3), (2, 0, 3), (3, 0, 1), (2, 0, 0), (4, 0, 0), (1, 0, 2), (0, 0, 0), (2, 0, 0), (1, 0, 4), (1, 0, 0), (0, 0, 1), (2, 0, 1), (0, 0, 2), (0, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 1)],
+    "Four-Color Rhinos": [(9, 0, 5), (6, 0, 6), (2, 0, 3), (2, 0, 3), (3, 0, 1), (2, 0, 0), (4, 0, 0), (1, 0, 2), (1, 0, 1), (2, 0, 0), (1, 0, 4), (1, 0, 0), (0, 0, 1), (2, 0, 1), (0, 0, 2), (0, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 1)],
     "Izzet Murktide": [(7, 0, 7), (3, 0, 5), (4, 0, 1), (1, 0, 1), (0, 0, 3), (1, 0, 1), (1, 0, 1), (1, 0, 0), (0, 0, 2), (0, 0, 0), (0, 0, 2), (0, 0, 0), (1, 0, 2), (1, 0, 1), (1, 0, 0), (1, 0, 0), (1, 0, 0), (0, 1, 0), (1, 0, 1)],
     "Five-Color Creativity": [(5, 0, 11), (6, 0, 1), (1, 0, 4), (2, 0, 4), (0, 0, 1), (1, 0, 1), (0, 0, 1), (2, 0, 3), (4, 0, 1), (2, 0, 0), (0, 0, 0), (3, 0, 1), (1, 0, 0), (0, 0, 0), (0, 0, 1), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)],
     "Jeskai Breach": [(4, 0, 6), (4, 0, 2), (2, 0, 4), (1, 0, 3), (0, 0, 3), (2, 0, 1), (1, 0, 0), (2, 0, 1), (0, 0, 1), (1, 0, 1), (1, 0, 3), (0, 0, 0), (0, 0, 1), (0, 0, 0), (1, 0, 1), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)],
@@ -33,7 +34,7 @@ deck_count = pd.Series(
     index=pd.Index(deck_names, name="deck")
 )
 
-# Add beta(2,2) prior
+# Add beta(5, 5) prior
 matchup_dict_regularized = {
     k: [(i + 5, j, k + 5) for i, j, k in v]
     for k, v
@@ -42,13 +43,16 @@ matchup_dict_regularized = {
 
 payoff_matrix = pd.DataFrame(
     {
-        k: [i / (i + k) for i, j, k in v]
+        k: [k / (i + k) for i, j, k in v]
         for k, v
         in matchup_dict_regularized.items()
     },
     index=pd.Index(deck_names, name="deck"),
     columns=pd.Index(deck_names, name="deck")
 )
+
+# Filter things
+# --------------------
 
 exclude_me = [
     "Izzet Murktide",
@@ -66,3 +70,18 @@ exclude_me = [
 deck_count.drop(index=exclude_me, inplace=True)
 payoff_matrix.drop(columns=exclude_me, inplace=True)
 payoff_matrix.drop(index=exclude_me, inplace=True)
+
+# Data quality control
+# --------------------
+
+assert payoff_matrix.sum().sum() == payoff_matrix.shape[0] ** 2 / 2
+
+for i in payoff_matrix.columns:
+    for j in payoff_matrix.columns:
+        if i == j:
+            assert payoff_matrix.loc[i, j] == 0.5, payoff_matrix.loc[[i, j], [i, j]]
+        else:
+            assert np.isclose(
+                payoff_matrix.loc[i, j],
+                1 - payoff_matrix.loc[j, i]
+            ), payoff_matrix.loc[[i, j], [i, j]]
