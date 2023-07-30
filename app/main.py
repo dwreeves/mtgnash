@@ -10,8 +10,8 @@ import pandas as pd
 import streamlit as st
 
 from app.algo import get_nash_equilibrium
-from app.data import deck_count
-from app.data import payoff_matrix
+from app.data_lotr_protour import deck_count
+from app.data_lotr_protour import payoff_matrix
 from app.state import update_df_states
 from app.utils import st_markdown_file
 
@@ -24,7 +24,7 @@ def get_default_initial_weights(payoff_matrix: pd.DataFrame) -> pd.Series:
 
 def main():
     st.set_page_config(layout="wide")
-    st.header("`mtgnash`: Metagame Solver")
+    st.header("`mtgnash`: Metagame Solver - MTG PT LotR 2023 - Swiss Rounds")
     st.markdown("---")
     with st.expander("Description", expanded=False):
         st_markdown_file("overview.md")

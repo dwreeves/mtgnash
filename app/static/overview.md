@@ -1,3 +1,11 @@
+### The Data
+
+Data comes from here:
+
+[https://docs.google.com/spreadsheets/d/e/2PACX-1vQ54F5v3O59MRYj1p4mJ8TQZaHXyAuNqPDl-gXAVjNBcVDQlrAYzGu1-jn3wg9Yjm-h9RT4haHYpPkn/pubhtml](https://docs.google.com/spreadsheets/d/e/2PACX-1vQ54F5v3O59MRYj1p4mJ8TQZaHXyAuNqPDl-gXAVjNBcVDQlrAYzGu1-jn3wg9Yjm-h9RT4haHYpPkn/pubhtml)
+
+This is for the MTG PT LotR metagame.
+
 ### Overview
 This tool calculates the Nash equilibrium of a Magic: the Gathering metagame given
 a match-up matrix and starting values for the metagame share.
@@ -29,7 +37,7 @@ In any case, these are the things I would love to have here:
 
 - Priors
 - Parametrization of:
-    - Payoff matrix + w0. Data is currently hardcoded to te pre-Lurrus meta
+    - Payoff matrix + w0. ~~Data is currently hardcoded to te pre-Lurrus meta~~ Data is now for PT LotR.
     - Learning rate + decay + steps
     - Priors
     - Scale (log vs linear)

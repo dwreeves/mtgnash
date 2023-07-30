@@ -9,6 +9,13 @@
 
 Demo of a metagame solver for Magic: The Gathering.
 
+Run locally with:
+
+```shell
+pip install -r requirements.txt
+streamlit run app/main.py
+```
+
 ## Motivation
 
 When training younger data scientists, one of the things I try to instill in them is that importing from SKLearn and using a pre-packaged algorithm isn't going to get you very far in most quantative problems. A lot of the best work you're going to do is with actual math (both pen & paper and WolframAlpha), and thinking through problems creatively, precisely, and with some subject matter expertise.
