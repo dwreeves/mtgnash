@@ -6,6 +6,10 @@ Data comes from here:
 
 This is for the MTG PT LotR metagame.
 
+Code is available on Github here (warning-- slightly messy; WYSIWYG):
+
+[https://github.com/dwreeves/mtgnash](https://github.com/dwreeves/mtgnash)
+
 ### Overview
 This tool calculates the Nash equilibrium of a Magic: the Gathering metagame given
 a match-up matrix and starting values for the metagame share.
